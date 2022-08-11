@@ -5,24 +5,25 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useDispatch,useSelector } from "react-redux";
 import { addItem } from "../../redux/cartSlice";
-const ListArticle = ({ data }) => {
+const ListArticle = ({ articleList }) => {
   const router = useRouter();
   const dispatch=useDispatch()
-
+  
 
   const GoToArticleDetail = (id) => {
     id && router?.push(`/articles/${id}`);
   };
   return (
     <div className="grid grid-flow-row-dense auto-cols-fr  auto-rows-fr  grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4  m-2 gap-4 ">
-      {data.map((product) => {
+      
+      {articleList?.articles?.map(product => {
         return (
           <div key={product.id}>
             <Product
-              title={product.title}
+              title={product.name}
               price={product.price}
               rating={product.rating}
-              image={product.image}
+              image={product.imageURL}
               description={product.description}
               GoToArticleDetail={GoToArticleDetail}
               id={product.id}
@@ -64,6 +65,7 @@ const Product = ({
       <div className=" ">
         <Image
           src={image}
+          // src="https://img2.freepng.fr/20181113/oft/kisspng-leek-welsh-onion-aldi-vegetable-product-5beb0b7940a8d6.4561598915421305532649.jpg"
           width={200}
           height={250}
           objectFit="contain"
@@ -85,7 +87,7 @@ const Product = ({
       <p className="text-sm  line-clamp-2">{description}</p>
       <ReactStars
         count={5}
-        value={rating.rate}
+        value={rating?.rate}
         size={14}
         half={true}
         activeColor="#E28839"

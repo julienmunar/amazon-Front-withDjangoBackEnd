@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import Image from "next/image";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -12,16 +12,26 @@ import { useRouter } from "next/router";
 import { selectCart } from "../../redux/cartSlice";
 import { useDispatch } from "react-redux";
 import { useSession, signIn, signOut } from "next-auth/react";
-
+import AccountSignInDropDown from "./AccountSignInDropDown";
 const Header = () => {
-  const { data: session } = useSession();
-
+  const router = useRouter();
   const dispatch = useDispatch();
+  const ShoppingList = useSelector(selectCart);
+  const { data: session } = useSession();
+  const [display,setDisplay]=useState(false)
+
+
   const ChangeCartStatus = () => {
     dispatch(setCartOpen());
   };
-  const router = useRouter();
-  const ShoppingList = useSelector(selectCart);
+
+  const DisplaySignInDrowDownMenu=()=>{
+    setDisplay(true)
+  }
+
+  const HideSignInDrowDownMenu=()=>{
+    setDisplay(false)
+  }
   const initialValue = 0;
   const ShoppingListLenght = ShoppingList.map((item) => item.amount).reduce(
     (sum, currentvalue) => sum + currentvalue,
@@ -33,6 +43,7 @@ const Header = () => {
   return (
     <div className="flex bg-[#131921] md:items-center flex-grow p-1 flex-col md:flex-row relative   ">
       {/* LEFT */}
+      <AccountSignInDropDown display={display} HideSignInDrowDownMenu={HideSignInDrowDownMenu}/>
       <div className="flex text-white space-x-2 flex-grow  md:flex-grow-0 order-1 mt-2 md:mt-0  ">
         <div className="flex flex-grow  cursor-pointer">
           <MenuIcon className="md:hidden flex-grow-0" />
@@ -60,6 +71,7 @@ const Header = () => {
               Entrez votre adresse
             </h2>
           </div>
+          
         </div>
       </div>
 
@@ -91,6 +103,7 @@ const Header = () => {
             }
             action="Compte et Listes"
             dropDown
+            DisplaySignInDrowDownMenu={DisplaySignInDrowDownMenu}
           />
           <div
             className="  border py-1 px-2 border-[#131921] hover:border hover:border-gray-300 rounded-sm flex flex-col justify-center cursor-pointer"
@@ -123,12 +136,12 @@ const Header = () => {
 
 export default Header;
 
-const ButtonHeader = ({ title, action, dropDown }) => {
+const ButtonHeader = ({ title, action, dropDown,DisplaySignInDrowDownMenu }) => {
   const { data: session } = useSession();
   return (
     <div
       className="  border py-1 px-2 border-[#131921] hover:border hover:border-gray-300 rounded-sm flex flex-col justify-center cursor-pointer"
-      onClick={session ? signOut : signIn}
+      onClick={()=>{DisplaySignInDrowDownMenu()}}
     >
       <p className="text-xs whitespace-nowrap capitalize">{title}</p>
       <div className="flex">
